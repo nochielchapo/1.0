@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Train of Trainers 1.0 - CBT Portal</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-rose-500 selection:text-white">
+
+  <!-- TOP HEADER / BANNER -->
+  <header class="relative overflow-hidden border-b border-rose-900/30 bg-slate-900 shadow-2xl">
+    <!-- Banner Background Image -->
+    <div id="bannerBgImage" class="absolute inset-0 bg-cover bg-center transition-all duration-500" style="background-image: url('https://lh3.googleusercontent.com/d/1jpURBONixXznNBrnJn_tsPMLAZADsLe_');"></div>
+    
+    <!-- Crimson Red Translucent Theme Gradient Overlay -->
+    <div id="bannerGradientOverlay" class="absolute inset-0 bg-gradient-to-r from-rose-950/85 via-red-900/75 to-slate-950/90 backdrop-blur-[2px] transition-all duration-300 pointer-events-none"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center space-x-4 text-center md:text-left">
+        <!-- School Logo -->
+        <div class="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shrink-0 shadow-lg overflow-hidden p-1">
+          <img id="headerImageLogo" src="https://lh3.googleusercontent.com/d/1p27pqIdU92OTTP4PM5jQwv-VlU2xqSsD" alt="Logo" class="w-full h-full object-contain" onerror="this.onerror=null; this.classList.add('hidden'); document.getElementById('headerIcon').classList.remove('hidden');">
+          <i id="headerIcon" class="fa-solid fa-graduation-cap text-2xl text-rose-400 hidden"></i>
+        </div>
+        <div class="flex flex-col items-start">
+          <h1 id="displayInstName" class="inline-block px-2.5 py-0.5 rounded-md text-white font-extrabold text-xl sm:text-2xl tracking-tight bg-red-950/70 backdrop-blur-sm border border-white/40 shadow-sm mb-1 order-1">Techxagon Academy Limited</h1>
+          <span id="displayTestTitle" class="inline-block px-2.5 py-0.5 rounded-md text-white font-bold tracking-wide uppercase text-xs sm:text-sm bg-rose-600/80 backdrop-blur-sm border border-white/40 shadow-sm order-2">Train of Trainers 1.0</span>
+          <p id="displayTestSubtitle" class="text-xs sm:text-sm text-rose-200/90 font-medium mt-1 order-3">Digital Skills 1.0</p>
+        </div>
+      </div>
+
+      <!-- Teacher Controls Header Container -->
+      <div class="flex items-center space-x-2">
+        <!-- Theme Toggle Button -->
+        <button id="themeToggleBtn" onclick="toggleAppTheme()" class="px-3 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-semibold backdrop-blur-md border border-white/20 transition flex items-center gap-1.5 shadow-sm" title="Toggle Light/Dark Theme">
+          <i id="themeToggleIcon" class="fa-solid fa-sun text-amber-300"></i>
+          <span id="themeToggleText" class="hidden sm:inline">Light</span>
+        </button>
+
+        <button id="teacherUnlockBtn" onclick="promptTeacherUnlock()" class="px-3.5 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-semibold backdrop-blur-md border border-white/20 transition flex items-center gap-1.5 shadow-sm">
+          <i class="fa-solid fa-lock text-rose-300 text-[11px]"></i>
+          <span>Teacher Portal</span>
+        </button>
+
+        <div id="unlockedTeacherControls" class="hidden flex items-center space-x-2 bg-slate-900/80 p-1.5 rounded-xl border border-rose-500/30 backdrop-blur-md shadow-lg">
+          <button onclick="openEditorModal()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow">
+            <i class="fa-solid fa-file-pen text-[11px]"></i>
+            <span>Questions</span>
+          </button>
+          <button onclick="openBrandingModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-paintbrush text-rose-400 text-[11px]"></i>
+            <span>Branding</span>
+          </button>
+          <button onclick="openScoresModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 relative">
+            <i class="fa-solid fa-chart-line text-emerald-400 text-[11px]"></i>
+            <span>Scores</span>
+            <span id="submissionCountBadge" class="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full">0</span>
+          </button>
+          <button onclick="openSecurityModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold transition flex items-center gap-1.5" title="Security PIN & Cloud Webhook">
+            <i class="fa-solid fa-shield-halved text-amber-400 text-[11px]"></i>
+          </button>
+          <button onclick="lockTeacherAccess()" class="px-2.5 py-1.5 bg-slate-800 hover:bg-rose-950 text-rose-400 rounded-lg text-xs transition" title="Lock Teacher Portal">
+            <i class="fa-solid fa-lock-open text-[11px]"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER AREA -->
+  <main class="flex-grow flex items-center justify-center p-4 sm:p-6 lg:p-8">
+    <div id="appMainCard" class="w-full max-w-2xl card-bg border card-border rounded-3xl shadow-2xl overflow-hidden backdrop-blur-xl transition-all duration-300">
+
+      <!-- SCREEN 1: WELCOME / CANDIDATE LOGIN -->
+      <div id="welcomeScreen" class="p-6 sm:p-10 space-y-6">
+        <div class="text-center space-y-2">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-orange-500/10 text-orange-500 border border-orange-500/20 mb-2 shadow-inner">
+            <i class="fa-solid fa-user-graduate text-3xl"></i>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-bold tracking-tight title-text-color">Candidate Verification</h2>
+          <p class="text-xs sm:text-sm subtitle-text-color">Please provide your details below to commence the assessment.</p>
+        </div>
+
+        <form onsubmit="startTest(event)" class="space-y-4 pt-2">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider label-text-color mb-1.5">Full Name</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                <i class="fa-solid fa-user text-xs"></i>
+              </span>
+              <input type="text" id="studentName" required placeholder="e.g. Adebayo Namadi Chinenye"
+                     class="w-full pl-10 pr-4 py-3 input-bg input-border rounded-xl text-sm input-text-color placeholder-slate-500 focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 transition">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider label-text-color mb-1.5">School / Center</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                <i class="fa-solid fa-id-card text-xs"></i>
+              </span>
+              <input type="text" id="studentId" required placeholder="e.g. Kings and Queens College, Lagos"
+                     class="w-full pl-10 pr-4 py-3 input-bg input-border rounded-xl text-sm input-text-color placeholder-slate-500 focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 transition">
+            </div>
+          </div>
+
+          <div class="instruction-box-bg instruction-box-border rounded-xl p-4 text-xs subtitle-text-color space-y-2">
+            <div class="flex justify-between font-medium">
+              <span>Total Questions:</span>
+              <span id="instructionCount" class="title-text-color font-bold">5</span>
+            </div>
+            <div class="flex justify-between font-medium">
+              <span>Time Allocation:</span>
+              <span id="instructionTime" class="title-text-color font-bold">5 Minutes</span>
+            </div>
+            <div class="flex justify-between font-medium">
+              <span>Grading System:</span>
+              <span class="text-emerald-500 font-bold">Instant Cloud Automatic Feedback</span>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full py-3.5 px-4 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl shadow-lg shadow-orange-500/20 transition flex items-center justify-center space-x-2 text-sm">
+            <span>Start Assessment</span>
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- SCREEN 2: ACTIVE QUIZ EXAM SCREEN -->
+      <div id="quizScreen" class="hidden p-6 sm:p-8 space-y-6">
+        <!-- Top Quiz Header bar -->
+        <div class="flex flex-wrap justify-between items-center gap-3 pb-4 border-b card-border">
+          <div>
+            <span id="questionBadge" class="px-2.5 py-1 bg-rose-500/10 border border-rose-500/30 text-rose-500 rounded-lg text-xs font-bold">Question 1 of 5</span>
+            <div id="displayStudentName" class="text-xs font-medium subtitle-text-color mt-1">Candidate • ID</div>
+          </div>
+          <div class="flex items-center space-x-2 input-bg px-3 py-1.5 rounded-xl input-border">
+            <i class="fa-regular fa-clock text-rose-500 text-xs"></i>
+            <span id="timerDisplay" class="text-sm font-mono font-bold title-text-color tracking-wider">05:00</span>
+          </div>
+        </div>
+
+        <!-- Question Body -->
+        <div class="space-y-4">
+          <h3 id="questionText" class="text-base sm:text-lg font-bold title-text-color leading-relaxed">Loading Question...</h3>
+          <div id="optionsContainer" class="space-y-3 pt-2">
+            <!-- Dynamically populated options -->
+          </div>
+        </div>
+
+        <!-- Question Number Navigation Palette -->
+        <div class="pt-2 border-t card-border">
+          <span class="text-[11px] font-bold uppercase tracking-wider subtitle-text-color block mb-2">Question Navigation</span>
+          <div id="questionPalette" class="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto p-1">
+            <!-- Dynamically populated index buttons -->
+          </div>
+        </div>
+
+        <!-- Bottom Quiz Navigation Buttons -->
+        <div class="flex justify-between items-center pt-2">
+          <button id="prevBtn" onclick="navigateQuestion(-1)" class="px-4 py-2.5 btn-secondary-bg hover:opacity-80 subtitle-text-color rounded-xl text-xs font-semibold transition flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed">
+            <i class="fa-solid fa-chevron-left text-xs"></i>
+            <span>Previous</span>
+          </button>
+
+          <button id="nextBtn" onclick="navigateQuestion(1)" class="px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-lg shadow-rose-600/20">
+            <span>Next</span>
+            <i class="fa-solid fa-chevron-right text-xs"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- SCREEN 3: RESULTS & SCOREBOARD SCREEN -->
+      <div id="resultsScreen" class="hidden p-6 sm:p-10 space-y-6 text-center">
+        <div>
+          <div id="scoreBadgeIcon" class="inline-flex items-center justify-center w-20 h-20 rounded-full mb-4 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shadow-inner">
+            <i id="scoreIcon" class="fa-solid fa-trophy text-4xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold title-text-color mb-1">Assessment Submitted & Synced!</h2>
+          <p id="resStudentName" class="text-xs font-medium subtitle-text-color">Candidate Name • ID</p>
+        </div>
+
+        <!-- Score Stat Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 instruction-box-bg p-4 rounded-2xl instruction-box-border">
+          <div class="stat-card-bg p-3 rounded-xl card-border">
+            <span class="text-[10px] font-bold uppercase tracking-wider subtitle-text-color block">Score</span>
+            <span id="resPercentage" class="text-lg font-black title-text-color mt-1 block">0%</span>
+          </div>
+          <div class="stat-card-bg p-3 rounded-xl card-border">
+            <span class="text-[10px] font-bold uppercase tracking-wider subtitle-text-color block">Correct</span>
+            <span id="resCorrect" class="text-lg font-black text-emerald-500 mt-1 block">0/0</span>
+          </div>
+          <div class="stat-card-bg p-3 rounded-xl card-border">
+            <span class="text-[10px] font-bold uppercase tracking-wider subtitle-text-color block">Incorrect</span>
+            <span id="resIncorrect" class="text-lg font-black text-rose-500 mt-1 block">0/0</span>
+          </div>
+          <div class="stat-card-bg p-3 rounded-xl card-border">
+            <span class="text-[10px] font-bold uppercase tracking-wider subtitle-text-color block">Time Used</span>
+            <span id="resTime" class="text-sm font-black text-indigo-500 mt-1 block">0m 0s</span>
+          </div>
+        </div>
+
+        <!-- Answer Review Accordion -->
+        <div class="text-left space-y-3 pt-2">
+          <span class="text-xs font-bold uppercase tracking-wider subtitle-text-color block">Detailed Review & Explanations</span>
+          <div id="reviewContainer" class="space-y-3 max-h-64 overflow-y-auto pr-1">
+            <!-- Dynamically populated reviews -->
+          </div>
+        </div>
+
+        <div class="pt-4">
+          <button onclick="restartTest()" class="px-6 py-3 btn-secondary-bg hover:opacity-80 title-text-color font-bold rounded-xl text-xs transition card-border shadow">
+            <i class="fa-solid fa-rotate-right mr-1.5"></i> Take Test Again
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="pageFooter" class="border-t py-4 text-center text-xs">
+    <p id="footerText">Techxagon Academy Limited &bull; Train of Trainers 1.0 Built by Nochi +2348024646895&copy; 2026</p>
+  </footer>
+
+  <!-- MODALS CONTAINER -->
+
+  <!-- 1. Teacher PIN Unlock Modal -->
+  <div id="teacherUnlockModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-sm p-6 space-y-4 shadow-2xl relative">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-white text-sm flex items-center gap-2">
+          <i class="fa-solid fa-lock text-rose-500"></i> Teacher Access Verification
+        </h3>
+        <button onclick="closeTeacherUnlockModal()" class="text-slate-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p class="text-xs text-slate-400">Enter the administration passkey to access portal settings and scores.</p>
+      
+      <div class="relative">
+        <input type="password" id="teacherPinInput" onkeydown="handlePinEnterKey(event)" placeholder="Enter security PIN..."
+               class="w-full pl-3.5 pr-10 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-rose-500">
+        <button type="button" onclick="const i = document.getElementById('teacherPinInput'); i.type = i.type === 'password' ? 'text' : 'password'; this.firstElementChild.className = i.type === 'password' ? 'fa-solid fa-eye text-xs' : 'fa-solid fa-eye-slash text-xs';" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300">
+          <i id="unlockPinEye" class="fa-solid fa-eye text-xs"></i>
+        </button>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeTeacherUnlockModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold">Cancel</button>
+        <button onclick="verifyTeacherPin()" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold shadow">Unlock Portal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Security & Database Config Modal -->
+  <div id="securityModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-white text-sm flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-amber-400"></i> Portal Security & Cloud Database
+        </h3>
+        <button onclick="closeSecurityModal()" class="text-slate-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">Teacher Access PIN</label>
+          <div class="relative">
+            <input type="password" id="teacherPinConfigInput" placeholder="##**##@Ee(0)"
+                   class="w-full pl-3 pr-10 py-2 bg-slate-950 border border-slate-800 rounded-lg text-white">
+            <button type="button" onclick="const i = document.getElementById('teacherPinConfigInput'); i.type = i.type === 'password' ? 'text' : 'password'; this.firstElementChild.className = i.type === 'password' ? 'fa-solid fa-eye text-xs' : 'fa-solid fa-eye-slash text-xs';" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500">
+              <i id="configPinEye" class="fa-solid fa-eye text-xs"></i>
+            </button>
+          </div>
+          <button onclick="saveTeacherPin()" class="mt-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg font-bold">Update PIN</button>
+        </div>
+
+        <div class="pt-2 border-t border-slate-800">
+          <label class="block font-bold text-slate-300 mb-1">Cloud Database Status</label>
+          <div class="p-3 bg-slate-950 border border-emerald-500/30 rounded-lg text-emerald-400 space-y-1">
+            <div class="flex items-center gap-1.5 font-bold">
+              <i class="fa-solid fa-circle-check"></i> Connected to Global Firestore
+            </div>
+            <p class="text-[11px] text-slate-400">Student submissions and question edits automatically synchronize worldwide in real time.</p>
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-slate-800">
+          <label class="block font-bold text-slate-300 mb-1">Google Sheet Webhook URL (Optional Backup)</label>
+          <input type="url" id="googleSheetWebhookInput" placeholder="https://script.google.com/macros/s/.../exec"
+                 class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-white">
+          <div class="flex justify-between items-center mt-1.5">
+            <button onclick="showGoogleScriptGuide()" class="text-indigo-400 hover:underline">Setup Guide</button>
+            <button onclick="saveGoogleSheetsWebhook()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold">Save Webhook</button>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-end pt-2">
+        <button onclick="closeSecurityModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Question Bank Editor Modal -->
+  <div id="editorModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="p-4 sm:p-5 border-b border-slate-800 flex justify-between items-center bg-slate-950">
+        <h3 class="font-bold text-white text-sm flex items-center gap-2">
+          <i class="fa-solid fa-file-pen text-rose-500"></i> Question Bank & Duration Editor
+        </h3>
+        <button onclick="closeEditorModal()" class="text-slate-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="p-4 border-b border-slate-800 bg-slate-950/50 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="flex items-center space-x-2">
+          <span class="font-semibold text-slate-300">Test Duration (Minutes):</span>
+          <input type="number" id="customTimeInput" min="1" max="180" class="w-16 p-1.5 bg-slate-900 border border-slate-800 rounded-lg text-white font-bold text-center">
+        </div>
+        <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-800">
+          <button id="tabVisualBtn" onclick="switchEditorTab('visual')" class="py-1.5 px-3 rounded-lg bg-rose-600 text-white font-bold transition">Visual Builder</button>
+          <button id="tabJsonBtn" onclick="switchEditorTab('json')" class="py-1.5 px-3 rounded-lg text-slate-400 hover:text-white font-medium transition">JSON Source</button>
+        </div>
+      </div>
+
+      <div class="flex-grow overflow-y-auto p-4 sm:p-5 space-y-4">
+        <!-- Visual Editor Tab View -->
+        <div id="visualEditorView" class="space-y-4">
+          <div id="questionsListContainer" class="space-y-4">
+            <!-- Dynamically populated question cards -->
+          </div>
+          <div class="flex gap-2 pt-2">
+            <button onclick="addNewQuestionCard()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-rose-400 border border-rose-500/20 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+              <i class="fa-solid fa-plus"></i> Add Question
+            </button>
+            <button onclick="resetDefaultQuestions()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition">
+              Reset Default
+            </button>
+          </div>
+        </div>
+
+        <!-- JSON Editor Tab View -->
+        <div id="jsonEditorView" class="hidden space-y-2">
+          <p class="text-xs text-slate-400">Edit raw exam question bank JSON structure directly:</p>
+          <textarea id="jsonEditor" rows="14" class="w-full font-mono text-xs p-3 bg-slate-950 text-emerald-400 border border-slate-800 rounded-xl focus:outline-none focus:border-rose-500"></textarea>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-slate-800 bg-slate-950 flex justify-end gap-2">
+        <button onclick="closeEditorModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold">Cancel</button>
+        <button onclick="saveQuestionsFromModal()" class="px-5 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold shadow">Save Changes & Sync Cloud</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Branding Settings Modal -->
+  <div id="brandingModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950">
+        <h3 class="font-bold text-white text-sm flex items-center gap-2">
+          <i class="fa-solid fa-paintbrush text-rose-500"></i> Banner & Branding Settings
+        </h3>
+        <button onclick="closeBrandingModal()" class="text-slate-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="flex-grow overflow-y-auto p-4 space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">Institution / School Name</label>
+          <input type="text" id="brandInstInput" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-white font-medium">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">Exam / Test Title</label>
+          <input type="text" id="brandTitleInput" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-white font-medium">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">Subtitle / Tagline</label>
+          <input type="text" id="brandSubtitleInput" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-white font-medium">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">Header Theme Gradient</label>
+          <select id="brandThemeSelect" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-white font-medium">
+            <option value="rose">Crimson Red (Default)</option>
+            <option value="indigo">Deep Indigo</option>
+            <option value="emerald">Emerald Teal</option>
+            <option value="blue">Royal Blue</option>
+            <option value="purple">Vibrant Purple</option>
+            <option value="dark">Dark Slate</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">Banner Background Image URL</label>
+          <input type="text" id="brandBannerImgInput" placeholder="https://..." class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-white font-medium">
+          <div class="mt-1 flex items-center gap-2">
+            <label class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded-lg text-[11px] font-semibold border border-slate-700">
+              <i class="fa-solid fa-upload mr-1"></i> Upload Image File
+              <input type="file" accept="image/*" onchange="handleImageFileUpload(event, 'brandBannerImgInput')" class="hidden">
+            </label>
+            <span class="text-[10px] text-slate-500">Auto-compresses to optimal size</span>
+          </div>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">School Logo URL</label>
+          <input type="text" id="brandLogoUrlInput" placeholder="https://..." class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-white font-medium">
+          <div class="mt-1 flex items-center gap-2">
+            <label class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded-lg text-[11px] font-semibold border border-slate-700">
+              <i class="fa-solid fa-upload mr-1"></i> Upload Logo File
+              <input type="file" accept="image/*" onchange="handleImageFileUpload(event, 'brandLogoUrlInput')" class="hidden">
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-slate-800 bg-slate-950 flex justify-end gap-2">
+        <button onclick="closeBrandingModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold">Cancel</button>
+        <button onclick="saveBrandingSettings()" class="px-5 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold shadow">Save Branding</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Teacher Scores & Analytics Modal -->
+  <div id="scoresModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="p-4 sm:p-5 border-b border-slate-800 flex justify-between items-center bg-slate-950">
+        <h3 class="font-bold text-white text-sm flex items-center gap-2">
+          <i class="fa-solid fa-chart-line text-emerald-400"></i> Global Cloud Student Submissions & Scores
+        </h3>
+        <div class="flex items-center gap-2">
+          <button onclick="exportScoresCSV()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow">
+            <i class="fa-solid fa-file-excel"></i> Export CSV
+          </button>
+          <button onclick="closeScoresModal()" class="text-slate-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Bar -->
+      <div class="grid grid-cols-3 gap-3 p-4 bg-slate-950/60 border-b border-slate-800 text-xs">
+        <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+          <span class="text-slate-500 font-semibold uppercase tracking-wider block text-[10px]">Total Submissions</span>
+          <span id="statTotalStudents" class="text-lg font-black text-white mt-0.5 block">0</span>
+        </div>
+        <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+          <span class="text-slate-500 font-semibold uppercase tracking-wider block text-[10px]">Average Score</span>
+          <span id="statAverageScore" class="text-lg font-black text-emerald-400 mt-0.5 block">0%</span>
+        </div>
+        <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+          <span class="text-slate-500 font-semibold uppercase tracking-wider block text-[10px]">Highest Score</span>
+          <span id="statHighScore" class="text-lg font-black text-amber-400 mt-0.5 block">0%</span>
+        </div>
+      </div>
+
+      <div class="p-4 border-b border-slate-800 bg-slate-950/40 flex justify-between items-center">
+        <input type="text" id="scoreSearchInput" oninput="filterScoresTable()" placeholder="Search student name or school..."
+               class="w-full sm:w-72 px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+        <button onclick="refreshSubmissionsFromCloud()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1.5">
+          <i class="fa-solid fa-rotate"></i> Refresh Sync
+        </button>
+      </div>
+
+      <div class="flex-grow overflow-y-auto p-4">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-slate-800 text-slate-400 font-bold uppercase tracking-wider">
+                <th class="pb-3 px-2">Student Name</th>
+                <th class="pb-3 px-2">School / Center</th>
+                <th class="pb-3 px-2">Score</th>
+                <th class="pb-3 px-2">Correct</th>
+                <th class="pb-3 px-2">Time Taken</th>
+                <th class="pb-3 px-2 text-right">Submitted At</th>
+              </tr>
+            </thead>
+            <tbody id="scoresTableBody" class="divide-y divide-slate-800/60">
+              <tr>
+                <td colspan="6" class="text-center py-8 text-slate-500">Loading student submissions from global cloud...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-slate-800 bg-slate-950 flex justify-end">
+        <button onclick="closeScoresModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Notice Dialog Modal -->
+  <div id="noticeModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-sm p-6 space-y-4 text-center shadow-2xl">
+      <div id="noticeIconBox" class="w-12 h-12 rounded-full flex items-center justify-center mx-auto text-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+        <i id="noticeIcon" class="fa-solid fa-circle-info"></i>
+      </div>
+      <div>
+        <h3 id="noticeTitle" class="font-bold text-white text-sm mb-1">Notification</h3>
+        <p id="noticeBody" class="text-xs text-slate-400 leading-relaxed">Notice message here.</p>
+      </div>
+      <button onclick="closeNoticeModal()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition">OK</button>
+    </div>
+  </div>
+
+  <!-- 7. Confirm Submit Modal -->
+  <div id="submitConfirmModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-sm p-6 space-y-4 text-center shadow-2xl">
+      <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto text-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <div>
+        <h3 class="font-bold text-white text-sm mb-1">Confirm Submission</h3>
+        <p id="submitModalMessage" class="text-xs text-slate-400 leading-relaxed">Submit your test for grading?</p>
+      </div>
+      <div class="flex gap-2 pt-1">
+        <button onclick="closeSubmitModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold">Cancel</button>
+        <button onclick="confirmSubmitAction()" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold shadow">Submit Test</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cloud Firestore & Firebase Realtime Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'mini-cbt-app';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' 
+      ? JSON.parse(__firebase_config) 
+      : { apiKey: "demo", authDomain: "demo.firebaseapp.com", projectId: "demo-app" };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let dbUser = null;
+    window.studentSubmissions = [];
+
+    async function initCloudStorage() {
+      try {
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          const cred = await signInWithCustomToken(auth, __initial_auth_token);
+          dbUser = cred.user;
+        } else {
+          const cred = await signInAnonymously(auth);
+          dbUser = cred.user;
+        }
+
+        // Live realtime listener for student submissions from global Firestore collection
+        const submissionsRef = collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
+        onSnapshot(submissionsRef, (snapshot) => {
+          const docs = [];
+          snapshot.forEach(doc => {
+            docs.push({ id: doc.id, ...doc.data() });
+          });
+          
+          docs.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+          window.studentSubmissions = docs;
+          
+          if (window.updateScoresUI) {
+            window.updateScoresUI();
+          }
+        }, (err) => {
+          console.error("Error loading submissions in realtime:", err);
+        });
+
+        // Live listener for portal configuration settings (branding, questions, duration)
+        const configDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'config');
+        onSnapshot(configDocRef, (docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (data.branding && window.applyCloudBranding) {
+              window.applyCloudBranding(data.branding);
+            }
+            if (data.questions && window.applyCloudQuestions) {
+              window.applyCloudQuestions(data.questions, data.testDurationMinutes);
+            }
+            if (data.teacherPin) {
+              window.teacherSecurityPin = data.teacherPin;
+              localStorage.setItem('cbt_teacher_pin', data.teacherPin);
+            }
+            if (data.googleWebhookUrl) {
+              window.googleSheetWebhookUrl = data.googleWebhookUrl;
+              localStorage.setItem('cbt_google_webhook', data.googleWebhookUrl);
+            }
+          }
+        }, (err) => {
+          console.error("Error loading saved config from cloud:", err);
+        });
+
+      } catch (err) {
+        console.error("Firebase Authentication Error:", err);
+      }
+    }
+
+    // Explicit manual fetch function for teacher scores modal refresh
+    window.refreshSubmissionsFromCloud = async function() {
+      try {
+        const submissionsRef = collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
+        const snapshot = await getDocs(submissionsRef);
+        const docs = [];
+        snapshot.forEach(doc => {
+          docs.push({ id: doc.id, ...doc.data() });
+        });
+        docs.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        window.studentSubmissions = docs;
+        if (window.updateScoresUI) window.updateScoresUI();
+        showNotice("Synced", "Scores refreshed successfully from cloud database!", "fa-solid fa-cloud-arrow-down", "bg-emerald-100 text-emerald-600");
+      } catch (e) {
+        console.error("Manual refresh error:", e);
+      }
+    };
+
+    // Persist portal configuration to Cloud Firestore
+    window.saveConfigToCloud = async function(configData) {
+      try {
+        if (!auth.currentUser) {
+          await signInAnonymously(auth);
+        }
+        const configDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'config');
+        await setDoc(configDocRef, configData, { merge: true });
+      } catch (e) {
+        console.error("Error persisting config to cloud:", e);
+      }
+    };
+
+    // Save student score to Cloud Firestore database
+    window.saveStudentSubmission = async function(submissionData) {
+      const payload = {
+        ...submissionData,
+        timestamp: Date.now(),
+        submittedAt: new Date().toLocaleString()
+      };
+
+      try {
+        if (!auth.currentUser) {
+          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+            await signInWithCustomToken(auth, __initial_auth_token);
+          } else {
+            await signInAnonymously(auth);
+          }
+        }
+        const submissionsRef = collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
+        await addDoc(submissionsRef, payload);
+      } catch (e) {
+        console.error("Error saving student score to Firestore:", e);
+        window.studentSubmissions.unshift(payload);
+        if (window.updateScoresUI) window.updateScoresUI();
+      }
+
+      const webhookUrl = window.googleSheetWebhookUrl || localStorage.getItem('cbt_google_webhook');
+      if (webhookUrl && webhookUrl.startsWith('http')) {
+        try {
+          fetch(webhookUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        } catch (err) {
+          console.error("Google Sheet webhook error:", err);
+        }
+      }
+    };
+
+    initCloudStorage();
+  </script>
+
+  <!-- Application Logic JS -->
+  <script>
+    // Theme Switcher Logic
+    let currentTheme = localStorage.getItem('cbt_theme_mode') || 'dark';
+
+    function applyThemeMode(theme) {
+      currentTheme = theme;
+      localStorage.setItem('cbt_theme_mode', theme);
+      
+      const body = document.body;
+      const themeIcon = document.getElementById('themeToggleIcon');
+      const themeText = document.getElementById('themeToggleText');
+
+      if (theme === 'light') {
+        body.classList.remove('bg-slate-950', 'text-slate-100');
+        body.classList.add('bg-slate-100', 'text-slate-900');
+        if (themeIcon) themeIcon.className = "fa-solid fa-moon text-indigo-600";
+        if (themeText) themeText.innerText = "Dark";
+      } else {
+        body.classList.remove('bg-slate-100', 'text-slate-900');
+        body.classList.add('bg-slate-950', 'text-slate-100');
+        if (themeIcon) themeIcon.className = "fa-solid fa-sun text-amber-300";
+        if (themeText) themeText.innerText = "Light";
+      }
+
+      // Update dynamic stylesheet classes for cards and modals
+      const styleId = 'dynamicThemeRules';
+      let styleTag = document.getElementById(styleId);
+      if (!styleTag) {
+        styleTag = document.createElement('style');
+        styleTag.id = styleId;
+        document.head.appendChild(styleTag);
+      }
+
+      if (theme === 'light') {
+        styleTag.innerHTML = `
+          .card-bg { background-color: #ffffff; color: #0f172a; }
+          .card-border { border-color: #e2e8f0; }
+          .title-text-color { color: #0f172a !important; }
+          .subtitle-text-color { color: #64748b !important; }
+          .label-text-color { color: #334155 !important; }
+          .input-bg { background-color: #f8fafc !important; color: #0f172a !important; }
+          .input-border { border-color: #cbd5e1 !important; }
+          .input-text-color { color: #0f172a !important; }
+          .instruction-box-bg { background-color: #f1f5f9 !important; }
+          .instruction-box-border { border-color: #cbd5e1 !important; }
+          .stat-card-bg { background-color: #ffffff !important; }
+          .btn-secondary-bg { background-color: #e2e8f0 !important; color: #1e293b !important; }
+          footer { background-color: #f8fafc; border-color: #e2e8f0; color: #64748b; }
+          header { background-color: #ffffff; border-color: #e2e8f0; }
+          #unlockedTeacherControls { background-color: rgba(255, 255, 255, 0.9) !important; }
+        `;
+      } else {
+        styleTag.innerHTML = `
+          .card-bg { background-color: #0f172a; color: #f8fafc; }
+          .card-border { border-color: #1e293b; }
+          .title-text-color { color: #f8fafc !important; }
+          .subtitle-text-color { color: #94a3b8 !important; }
+          .label-text-color { color: #cbd5e1 !important; }
+          .input-bg { background-color: #020617 !important; color: #f8fafc !important; }
+          .input-border { border-color: #1e293b !important; }
+          .input-text-color { color: #f8fafc !important; }
+          .instruction-box-bg { background-color: rgba(2, 6, 23, 0.6) !important; }
+          .instruction-box-border { border-color: rgba(30, 41, 59, 0.8) !important; }
+          .stat-card-bg { background-color: #0f172a !important; }
+          .btn-secondary-bg { background-color: #1e293b !important; color: #f1f5f9 !important; }
+          footer { background-color: #020617; border-color: #090d16; color: #64748b; }
+          header { background-color: #0f172a; border-color: rgba(136, 19, 55, 0.3); }
+          #unlockedTeacherControls { background-color: rgba(15, 23, 42, 0.8) !important; }
+        `;
+      }
+    }
+
+    function toggleAppTheme() {
+      if (currentTheme === 'dark') {
+        applyThemeMode('light');
+      } else {
+        applyThemeMode('dark');
+      }
+    }
+
+    applyThemeMode(currentTheme);
+
+    // Initial Default Questions
+    const defaultQuestions = [
+      {
+        question: "What is the primary function of the Central Processing Unit (CPU) in a computer?",
+        options: [
+          { text: "Executing program instructions and processing data", isCorrect: true },
+          { text: "Storing large files permanently on disk", isCorrect: false },
+          { text: "Displaying high-resolution graphics to the screen", isCorrect: false },
+          { text: "Connecting the computer to external Wi-Fi networks", isCorrect: false }
+        ],
+        explanation: "The CPU acts as the brain of the computer, responsible for executing instructions and handling data processing operations."
+      },
+      {
+        question: "Which planet in our solar system is known as the 'Red Planet'?",
+        options: [
+          { text: "Jupiter", isCorrect: false },
+          { text: "Mars", isCorrect: true },
+          { text: "Venus", isCorrect: false },
+          { text: "Saturn", isCorrect: false }
+        ],
+        explanation: "Mars appears reddish due to the prevalence of iron oxide (rust) on its surface."
+      },
+      {
+        question: "What chemical process do green plants use to convert sunlight into organic energy?",
+        options: [
+          { text: "Cellular Respiration", isCorrect: false },
+          { text: "Fermentation", isCorrect: false },
+          { text: "Photosynthesis", isCorrect: true },
+          { text: "Transpiration", isCorrect: false }
+        ],
+        explanation: "Photosynthesis allows plants to synthesize nutrients from carbon dioxide and water using light energy."
+      },
+      {
+        question: "What is the chemical symbol for Gold on the periodic table?",
+        options: [
+          { text: "Ag", isCorrect: false },
+          { text: "Au", isCorrect: true },
+          { text: "Fe", isCorrect: false },
+          { text: "Pb", isCorrect: false }
+        ],
+        explanation: "The chemical symbol 'Au' originates from the Latin word for gold, 'Aurum'."
+      },
+      {
+        question: "Which continent is the largest by total land area?",
+        options: [
+          { text: "Africa", isCorrect: false },
+          { text: "North America", isCorrect: false },
+          { text: "Asia", isCorrect: true },
+          { text: "Antarctica", isCorrect: false }
+        ],
+        explanation: "Asia is the largest continent in both land area and population."
+      }
+    ];
+
+    let questions = JSON.parse(localStorage.getItem('cbt_questions')) || defaultQuestions;
+    let testDurationMinutes = parseInt(localStorage.getItem('cbt_duration')) || 5;
+    window.teacherSecurityPin = localStorage.getItem('cbt_teacher_pin') || '##**##@Ee(0)';
+    window.googleSheetWebhookUrl = localStorage.getItem('cbt_google_webhook') || '';
+
+    let currentQuestionIdx = 0;
+    let userAnswers = new Array(questions.length).fill(null);
+    let studentData = { name: '', id: '' };
+    let timerSeconds = testDurationMinutes * 60;
+    let timerInterval = null;
+    let timeElapsed = 0;
+    let isTeacherUnlocked = false;
+
+    // Hardcoded Default Branding State
+    let defaultBranding = {
+      instName: 'Techxagon Academy Limited',
+      title: 'Train of Trainers 1.0',
+      subtitle: 'Digital Skills 1.0',
+      theme: 'rose',
+      bannerImg: 'https://drive.google.com/file/d/1jpURBONixXznNBrnJn_tsPMLAZADsLe_/view?usp=sharing',
+      logoUrl: 'https://drive.google.com/file/d/1p27pqIdU92OTTP4PM5jQwv-VlU2xqSsD/view?usp=sharing'
+    };
+
+    let branding = JSON.parse(localStorage.getItem('cbt_branding')) || defaultBranding;
+
+    // Helper to format Google Drive URLs automatically to direct image links
+    function formatImageUrl(url) {
+      if (!url) return '';
+      let formatted = url.trim();
+      const driveMatch = formatted.match(/\/file\/d\/([^\/]+)/);
+      if (driveMatch && driveMatch[1]) {
+        return `https://lh3.googleusercontent.com/d/${driveMatch[1]}`;
+      }
+      const driveUcMatch = formatted.match(/id=([a-zA-Z0-9_-]+)/);
+      if (formatted.includes('drive.google.com') && driveUcMatch && driveUcMatch[1]) {
+        return `https://lh3.googleusercontent.com/d/${driveUcMatch[1]}`;
+      }
+      return formatted;
+    }
+
+    function promptTeacherUnlock() {
+      document.getElementById('teacherPinInput').value = '';
+      document.getElementById('teacherPinInput').type = 'password';
+      document.getElementById('unlockPinEye').className = 'fa-solid fa-eye text-xs';
+      document.getElementById('teacherUnlockModal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('teacherPinInput').focus(), 100);
+    }
+
+    function closeTeacherUnlockModal() {
+      document.getElementById('teacherUnlockModal').classList.add('hidden');
+    }
+
+    function handlePinEnterKey(e) {
+      if (e.key === 'Enter') {
+        verifyTeacherPin();
+      }
+    }
+
+    function verifyTeacherPin() {
+      const pin = document.getElementById('teacherPinInput').value;
+      if (pin === window.teacherSecurityPin) {
+        closeTeacherUnlockModal();
+        isTeacherUnlocked = true;
+        updateAdminContainerUI();
+        showNotice("Teacher Access Unlocked", "Welcome Teacher! The administration options are now accessible in the header.", "fa-solid fa-unlock", "bg-emerald-100 text-emerald-600");
+      } else {
+        showNotice("Incorrect PIN", "The access key entered is incorrect. Please check your PIN.", "fa-solid fa-circle-xmark", "bg-rose-100 text-rose-600");
+      }
+    }
+
+    function lockTeacherAccess() {
+      isTeacherUnlocked = false;
+      updateAdminContainerUI();
+      showNotice("Portal Locked", "Teacher management container is now locked.", "fa-solid fa-lock", "bg-indigo-100 text-indigo-600");
+    }
+
+    function updateAdminContainerUI() {
+      const unlockBtn = document.getElementById('teacherUnlockBtn');
+      const controls = document.getElementById('unlockedTeacherControls');
+
+      if (isTeacherUnlocked) {
+        unlockBtn.classList.add('hidden');
+        controls.classList.remove('hidden');
+      } else {
+        unlockBtn.classList.remove('hidden');
+        controls.classList.add('hidden');
+      }
+    }
+
+    function openSecurityModal() {
+      const pinInput = document.getElementById('teacherPinConfigInput');
+      pinInput.value = window.teacherSecurityPin;
+      pinInput.type = 'password';
+      document.getElementById('configPinEye').className = 'fa-solid fa-eye text-xs';
+      document.getElementById('googleSheetWebhookInput').value = window.googleSheetWebhookUrl;
+      document.getElementById('securityModal').classList.remove('hidden');
+    }
+
+    function closeSecurityModal() {
+      document.getElementById('securityModal').classList.add('hidden');
+    }
+
+    function saveTeacherPin() {
+      const newPin = document.getElementById('teacherPinConfigInput').value.trim();
+      if (!newPin) {
+        showNotice("Invalid PIN", "Please enter a valid PIN.", "fa-solid fa-triangle-exclamation", "bg-amber-100 text-amber-600");
+        return;
+      }
+      window.teacherSecurityPin = newPin;
+      localStorage.setItem('cbt_teacher_pin', newPin);
+
+      if (window.saveConfigToCloud) {
+        window.saveConfigToCloud({ teacherPin: newPin });
+      }
+
+      showNotice("Passkey Saved", "Teacher Access PIN updated and secured!", "fa-solid fa-key", "bg-emerald-100 text-emerald-600");
+    }
+
+    function saveGoogleSheetsWebhook() {
+      const webhook = document.getElementById('googleSheetWebhookInput').value.trim();
+      window.googleSheetWebhookUrl = webhook;
+      localStorage.setItem('cbt_google_webhook', webhook);
+
+      if (window.saveConfigToCloud) {
+        window.saveConfigToCloud({ googleWebhookUrl: webhook });
+      }
+
+      showNotice("Google Sheet Webhook Saved", "Student test submissions will now auto-post to your connected Google Sheet!", "fa-solid fa-file-excel", "bg-emerald-100 text-emerald-600");
+    }
+
+    function showGoogleScriptGuide() {
+      showNotice("Google Sheet Integration Setup", "Create a Google Sheet -> Extensions -> Apps Script. Paste a script that receives doPost(e) JSON and appends a row with studentName, studentId, percentage, timeTaken. Deploy as Web App.", "fa-solid fa-book", "bg-indigo-100 text-indigo-600");
+    }
+
+    function handleImageFileUpload(event, targetInputId) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 800;
+
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
+          document.getElementById(targetInputId).value = compressedDataUrl;
+          showNotice("Image Uploaded", "Image optimized successfully! Click 'Save Branding' to apply changes.", "fa-solid fa-image", "bg-emerald-100 text-emerald-600");
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    window.applyCloudBranding = function(cloudBranding) {
+      branding = cloudBranding;
+      localStorage.setItem('cbt_branding', JSON.stringify(branding));
+      applyBranding();
+    };
+
+    window.applyCloudQuestions = function(cloudQuestions, cloudDuration) {
+      if (Array.isArray(cloudQuestions) && cloudQuestions.length > 0) {
+        questions = cloudQuestions;
+        localStorage.setItem('cbt_questions', JSON.stringify(questions));
+      }
+      if (cloudDuration) {
+        testDurationMinutes = parseInt(cloudDuration) || 5;
+        localStorage.setItem('cbt_duration', testDurationMinutes);
+      }
+      updateInstructionSummary();
+    };
+
+    function updateInstructionSummary() {
+      const countEl = document.getElementById('instructionCount');
+      const timeEl = document.getElementById('instructionTime');
+      if (countEl) countEl.innerText = questions.length;
+      if (timeEl) timeEl.innerText = `${testDurationMinutes} Minute${testDurationMinutes > 1 ? 's' : ''}`;
+    }
+
+    function showNotice(title, body, iconClass = "fa-solid fa-circle-info", iconBg = "bg-indigo-100 text-indigo-600") {
+      document.getElementById('noticeTitle').innerText = title;
+      document.getElementById('noticeBody').innerText = body;
+      document.getElementById('noticeIcon').className = iconClass;
+      document.getElementById('noticeIconBox').className = `w-12 h-12 rounded-full flex items-center justify-center mx-auto text-xl ${iconBg}`;
+      document.getElementById('noticeModal').classList.remove('hidden');
+    }
+
+    function closeNoticeModal() {
+      document.getElementById('noticeModal').classList.add('hidden');
+    }
+
+    function openSubmitModal() {
+      const unanswered = userAnswers.filter(a => a === null).length;
+      const msg = unanswered > 0 
+        ? `You still have ${unanswered} unanswered question(s). Are you sure you want to finish?`
+        : "You have answered all questions. Submit your test for grading?";
+      
+      document.getElementById('submitModalMessage').innerText = msg;
+      document.getElementById('submitConfirmModal').classList.remove('hidden');
+    }
+
+    function closeSubmitModal() {
+      document.getElementById('submitConfirmModal').classList.add('hidden');
+    }
+
+    function confirmSubmitAction() {
+      closeSubmitModal();
+      submitTest();
+    }
+
+    function startTest(e) {
+      e.preventDefault();
+      const nameVal = document.getElementById('studentName').value.trim();
+      const idVal = document.getElementById('studentId').value.trim();
+
+      if (!nameVal || !idVal) {
+        showNotice("Required Fields", "Please enter both your Full Name and School ID to start the test.", "fa-solid fa-triangle-exclamation", "bg-rose-100 text-rose-600");
+        return;
+      }
+
+      studentData.name = nameVal;
+      studentData.id = idVal;
+
+      document.getElementById('displayStudentName').innerText = `${studentData.name} • ${studentData.id}`;
+
+      document.getElementById('welcomeScreen').classList.add('hidden');
+      document.getElementById('quizScreen').classList.remove('hidden');
+
+      currentQuestionIdx = 0;
+      userAnswers = new Array(questions.length).fill(null);
+      timeElapsed = 0;
+      
+      renderQuestion();
+      renderPalette();
+      startTimer();
+    }
+
+    function startTimer() {
+      timerSeconds = testDurationMinutes * 60;
+      updateTimerDisplay();
+
+      if (timerInterval) clearInterval(timerInterval);
+
+      timerInterval = setInterval(() => {
+        timerSeconds--;
+        timeElapsed++;
+        updateTimerDisplay();
+
+        if (timerSeconds <= 0) {
+          clearInterval(timerInterval);
+          showNotice("Time Expired", "Your time allocation is complete. Your assessment will now be submitted.", "fa-solid fa-hourglass-end", "bg-amber-100 text-amber-600");
+          submitTest();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timerSeconds / 60);
+      const secs = timerSeconds % 60;
+      document.getElementById('timerDisplay').innerText = 
+        `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function renderQuestion() {
+      const q = questions[currentQuestionIdx];
+      document.getElementById('questionBadge').innerText = `Question ${currentQuestionIdx + 1} of ${questions.length}`;
+      document.getElementById('questionText').innerText = q.question;
+
+      const container = document.getElementById('optionsContainer');
+      container.innerHTML = '';
+
+      q.options.forEach((opt, idx) => {
+        const isSelected = userAnswers[currentQuestionIdx] === idx;
+        const optCard = document.createElement('div');
+        
+        let lightHover = currentTheme === 'light' ? 'hover:bg-slate-100 hover:border-slate-300 bg-white' : 'hover:bg-slate-900 hover:border-slate-700 bg-slate-950/60';
+        
+        optCard.className = `p-4 rounded-xl border transition-all cursor-pointer flex items-center space-x-3 ${
+          isSelected 
+            ? 'border-rose-500 bg-rose-500/10 ring-2 ring-rose-500/20' 
+            : `card-border ${lightHover}`
+        }`;
+        optCard.onclick = () => selectOption(idx);
+
+        const radio = document.createElement('div');
+        radio.className = `w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
+          isSelected ? 'border-rose-500 bg-rose-500 text-white' : 'card-border'
+        }`;
+        radio.innerHTML = isSelected ? '<i class="fa-solid fa-check text-[10px]"></i>' : '';
+
+        const text = document.createElement('span');
+        text.className = `text-sm font-medium ${isSelected ? 'title-text-color font-semibold' : 'subtitle-text-color'}`;
+        text.innerText = opt.text;
+
+        optCard.appendChild(radio);
+        optCard.appendChild(text);
+        container.appendChild(optCard);
+      });
+
+      document.getElementById('prevBtn').disabled = currentQuestionIdx === 0;
+      const nextBtn = document.getElementById('nextBtn');
+      if (currentQuestionIdx === questions.length - 1) {
+        nextBtn.innerHTML = `<span>Submit</span> <i class="fa-solid fa-paper-plane text-xs"></i>`;
+        nextBtn.onclick = () => openSubmitModal();
+      } else {
+        nextBtn.innerHTML = `<span>Next</span> <i class="fa-solid fa-chevron-right text-xs"></i>`;
+        nextBtn.onclick = () => navigateQuestion(1);
+      }
+    }
+
+    function selectOption(optIdx) {
+      userAnswers[currentQuestionIdx] = optIdx;
+      renderQuestion();
+      renderPalette();
+    }
+
+    function navigateQuestion(step) {
+      const newIdx = currentQuestionIdx + step;
+      if (newIdx >= 0 && newIdx < questions.length) {
+        currentQuestionIdx = newIdx;
+        renderQuestion();
+        renderPalette();
+      }
+    }
+
+    function jumpToQuestion(idx) {
+      currentQuestionIdx = idx;
+      renderQuestion();
+      renderPalette();
+    }
+
+    function renderPalette() {
+      const palette = document.getElementById('questionPalette');
+      palette.innerHTML = '';
+
+      questions.forEach((_, idx) => {
+        const btn = document.createElement('button');
+        const isCurrent = idx === currentQuestionIdx;
+        const isAnswered = userAnswers[idx] !== null;
+
+        let bgClass = currentTheme === 'light' ? 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100' : 'bg-slate-950 text-slate-400 border-slate-800 hover:bg-slate-900';
+        if (isCurrent) {
+          bgClass = 'bg-rose-600 text-white font-bold ring-2 ring-rose-400 border-rose-600';
+        } else if (isAnswered) {
+          bgClass = 'bg-emerald-600 text-white font-medium border-emerald-600';
+        }
+
+        btn.className = `w-9 h-9 rounded-xl text-xs flex items-center justify-center transition border ${bgClass}`;
+        btn.innerText = idx + 1;
+        btn.onclick = () => jumpToQuestion(idx);
+        palette.appendChild(btn);
+      });
+    }
+
+    function submitTest() {
+      if (timerInterval) clearInterval(timerInterval);
+
+      let correctCount = 0;
+      questions.forEach((q, idx) => {
+        const selectedOptIdx = userAnswers[idx];
+        if (selectedOptIdx !== null && q.options[selectedOptIdx] && q.options[selectedOptIdx].isCorrect) {
+          correctCount++;
+        }
+      });
+
+      const incorrectCount = questions.length - correctCount;
+      const percentage = questions.length > 0 ? Math.round((correctCount / questions.length) * 100) : 0;
+
+      document.getElementById('resStudentName').innerText = `${studentData.name} (${studentData.id})`;
+      document.getElementById('resPercentage').innerText = `${percentage}%`;
+      document.getElementById('resCorrect').innerText = `${correctCount}/${questions.length}`;
+      document.getElementById('resIncorrect').innerText = `${incorrectCount}/${questions.length}`;
+      
+      const mins = Math.floor(timeElapsed / 60);
+      const secs = timeElapsed % 60;
+      const formattedTime = `${mins}m ${secs}s`;
+      document.getElementById('resTime').innerText = formattedTime;
+
+      if (window.saveStudentSubmission) {
+        window.saveStudentSubmission({
+          studentName: studentData.name,
+          studentId: studentData.id || 'N/A',
+          percentage: percentage,
+          correctCount: correctCount,
+          totalQuestions: questions.length,
+          timeElapsedSeconds: timeElapsed,
+          timeTakenFormatted: formattedTime
+        });
+      }
+
+      const scoreIcon = document.getElementById('scoreIcon');
+      const badgeContainer = document.getElementById('scoreBadgeIcon');
+
+      if (percentage >= 70) {
+        badgeContainer.className = "inline-flex items-center justify-center w-20 h-20 rounded-full mb-4 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+        scoreIcon.className = "fa-solid fa-trophy text-4xl";
+      } else if (percentage >= 50) {
+        badgeContainer.className = "inline-flex items-center justify-center w-20 h-20 rounded-full mb-4 bg-amber-500/10 text-amber-400 border border-amber-500/20";
+        scoreIcon.className = "fa-solid fa-medal text-4xl";
+      } else {
+        badgeContainer.className = "inline-flex items-center justify-center w-20 h-20 rounded-full mb-4 bg-rose-500/10 text-rose-400 border border-rose-500/20";
+        scoreIcon.className = "fa-solid fa-circle-exclamation text-4xl";
+      }
+
+      renderReview();
+
+      document.getElementById('quizScreen').classList.add('hidden');
+      document.getElementById('resultsScreen').classList.remove('hidden');
+    }
+
+    function renderReview() {
+      const container = document.getElementById('reviewContainer');
+      container.innerHTML = '';
+
+      questions.forEach((q, idx) => {
+        const userChoiceIdx = userAnswers[idx];
+        const correctOpt = q.options.find(o => o.isCorrect);
+        const userOpt = userChoiceIdx !== null ? q.options[userChoiceIdx] : null;
+        const isCorrect = userOpt && userOpt.isCorrect;
+
+        const card = document.createElement('div');
+        card.className = `p-4 rounded-xl border ${isCorrect ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-rose-500/30 bg-rose-500/5'}`;
+
+        let statusBadge = isCorrect 
+          ? `<span class="text-[11px] bg-emerald-500/10 text-emerald-400 font-semibold px-2 py-0.5 rounded-lg border border-emerald-500/20"><i class="fa-solid fa-check mr-1"></i> Correct</span>`
+          : `<span class="text-[11px] bg-rose-500/10 text-rose-400 font-semibold px-2 py-0.5 rounded-lg border border-rose-500/20"><i class="fa-solid fa-xmark mr-1"></i> Incorrect</span>`;
+
+        card.innerHTML = `
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-xs font-bold text-slate-400">Q${idx + 1}.</span>
+            ${statusBadge}
+          </div>
+          <p class="font-semibold text-slate-200 text-sm mb-3">${escapeHTML(q.question)}</p>
+          <div class="text-xs space-y-1 text-slate-400 mb-2">
+            <div><strong class="text-slate-300">Candidate Answer:</strong> ${userOpt ? escapeHTML(userOpt.text) : '<i class="text-rose-400">Unanswered</i>'}</div>
+            <div><strong class="text-emerald-400">Correct Answer:</strong> ${correctOpt ? escapeHTML(correctOpt.text) : ''}</div>
+          </div>
+          ${q.explanation ? `<p class="text-xs text-slate-400 bg-slate-950 p-2.5 rounded-lg border border-slate-800 mt-2"><strong>Explanation:</strong> ${escapeHTML(q.explanation)}</p>` : ''}
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function restartTest() {
+      document.getElementById('resultsScreen').classList.add('hidden');
+      document.getElementById('welcomeScreen').classList.remove('hidden');
+    }
+
+    function openEditorModal() {
+      document.getElementById('customTimeInput').value = testDurationMinutes;
+      document.getElementById('jsonEditor').value = JSON.stringify(questions, null, 2);
+      renderVisualQuestionsBuilder();
+      document.getElementById('editorModal').classList.remove('hidden');
+    }
+
+    function closeEditorModal() {
+      document.getElementById('editorModal').classList.add('hidden');
+    }
+
+    function switchEditorTab(tab) {
+      const visualBtn = document.getElementById('tabVisualBtn');
+      const jsonBtn = document.getElementById('tabJsonBtn');
+      const visualView = document.getElementById('visualEditorView');
+      const jsonView = document.getElementById('jsonEditorView');
+
+      if (tab === 'visual') {
+        visualBtn.className = "py-1.5 px-3 rounded-lg bg-rose-600 text-white font-bold transition";
+        jsonBtn.className = "py-1.5 px-3 rounded-lg text-slate-400 hover:text-white font-medium transition";
+        visualView.classList.remove('hidden');
+        jsonView.classList.add('hidden');
+      } else {
+        jsonBtn.className = "py-1.5 px-3 rounded-lg bg-rose-600 text-white font-bold transition";
+        visualBtn.className = "py-1.5 px-3 rounded-lg text-slate-400 hover:text-white font-medium transition";
+        jsonView.classList.remove('hidden');
+        visualView.classList.add('hidden');
+      }
+    }
+
+    function renderVisualQuestionsBuilder() {
+      const container = document.getElementById('questionsListContainer');
+      container.innerHTML = '';
+
+      questions.forEach((q, qIdx) => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3 relative";
+
+        let optionsHTML = '';
+        q.options.forEach((opt, oIdx) => {
+          optionsHTML += `
+            <div class="flex items-center gap-2">
+              <input type="radio" name="correct_q_${qIdx}" value="${oIdx}" ${opt.isCorrect ? 'checked' : ''} class="w-4 h-4 text-rose-600 focus:ring-rose-500">
+              <input type="text" data-q="${qIdx}" data-opt="${oIdx}" value="${escapeHTML(opt.text)}" placeholder="Option ${oIdx + 1}"
+                     class="opt-input-text w-full text-xs p-2 rounded-lg border border-slate-800 focus:outline-none focus:ring-1 focus:ring-rose-500 bg-slate-900 text-white">
+            </div>
+          `;
+        });
+
+        card.innerHTML = `
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-bold text-slate-300">Question #${qIdx + 1}</span>
+            <button onclick="removeQuestionCard(${qIdx})" class="text-rose-400 hover:text-rose-300 text-xs font-semibold flex items-center gap-1">
+              <i class="fa-solid fa-trash"></i> Remove
+            </button>
+          </div>
+          <div>
+            <input type="text" data-q="${qIdx}" value="${escapeHTML(q.question)}" placeholder="Enter question prompt..."
+                   class="q-input-prompt w-full text-xs font-semibold p-2.5 rounded-lg border border-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500 bg-slate-900 text-white">
+          </div>
+          <div class="space-y-2">
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Options (Select radio for correct answer):</span>
+            ${optionsHTML}
+          </div>
+          <div>
+            <input type="text" data-q="${qIdx}" value="${escapeHTML(q.explanation || '')}" placeholder="Explanation for correct answer (optional)..."
+                   class="q-input-exp w-full text-xs p-2 rounded-lg border border-slate-800 focus:outline-none focus:ring-1 focus:ring-rose-500 bg-slate-900 text-slate-300">
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function addNewQuestionCard() {
+      questions.push({
+        question: "New Sample Question Text?",
+        options: [
+          { text: "Option A", isCorrect: true },
+          { text: "Option B", isCorrect: false },
+          { text: "Option C", isCorrect: false },
+          { text: "Option D", isCorrect: false }
+        ],
+        explanation: "Sample explanation text."
+      });
+      renderVisualQuestionsBuilder();
+      document.getElementById('jsonEditor').value = JSON.stringify(questions, null, 2);
+    }
+
+    function removeQuestionCard(idx) {
+      if (questions.length <= 1) {
+        showNotice("Cannot Remove", "You must keep at least 1 question in the exam.", "fa-solid fa-circle-exclamation", "bg-amber-100 text-amber-600");
+        return;
+      }
+      questions.splice(idx, 1);
+      renderVisualQuestionsBuilder();
+      document.getElementById('jsonEditor').value = JSON.stringify(questions, null, 2);
+    }
+
+    function resetDefaultQuestions() {
+      questions = JSON.parse(JSON.stringify(defaultQuestions));
+      renderVisualQuestionsBuilder();
+      document.getElementById('jsonEditor').value = JSON.stringify(questions, null, 2);
+    }
+
+    function saveQuestionsFromModal() {
+      const durInput = parseInt(document.getElementById('customTimeInput').value) || 5;
+      testDurationMinutes = Math.max(1, durInput);
+      localStorage.setItem('cbt_duration', testDurationMinutes);
+
+      const isVisualTab = !document.getElementById('visualEditorView').classList.contains('hidden');
+
+      if (isVisualTab) {
+        const prompts = document.querySelectorAll('.q-input-prompt');
+        const exps = document.querySelectorAll('.q-input-exp');
+
+        const updatedQuestions = [];
+
+        prompts.forEach((pElem, qIdx) => {
+          const qText = pElem.value.trim() || `Question ${qIdx + 1}`;
+          const expText = exps[qIdx] ? exps[qIdx].value.trim() : '';
+
+          const selectedRadio = document.querySelector(`input[name="correct_q_${qIdx}"]:checked`);
+          const correctOptIdx = selectedRadio ? parseInt(selectedRadio.value) : 0;
+
+          const qOptions = [];
+          for (let oIdx = 0; oIdx < 4; oIdx++) {
+            const optElem = document.querySelector(`.opt-input-text[data-q="${qIdx}"][data-opt="${oIdx}"]`);
+            const textVal = optElem ? optElem.value.trim() : `Option ${oIdx + 1}`;
+            qOptions.push({
+              text: textVal,
+              isCorrect: oIdx === correctOptIdx
+            });
+          }
+
+          updatedQuestions.push({
+            question: qText,
+            options: qOptions,
+            explanation: expText
+          });
+        });
+
+        questions = updatedQuestions;
+      } else {
+        try {
+          const parsed = JSON.parse(document.getElementById('jsonEditor').value);
+          if (!Array.isArray(parsed) || parsed.length === 0) {
+            showNotice("Invalid JSON", "Questions must be a non-empty array of objects.", "fa-solid fa-circle-xmark", "bg-rose-100 text-rose-600");
+            return;
+          }
+          questions = parsed;
+        } catch (err) {
+          showNotice("Syntax Error", "Invalid JSON syntax. Please verify commas and quotes.", "fa-solid fa-circle-xmark", "bg-rose-100 text-rose-600");
+          return;
+        }
+      }
+
+      localStorage.setItem('cbt_questions', JSON.stringify(questions));
+      updateInstructionSummary();
+
+      if (window.saveConfigToCloud) {
+        window.saveConfigToCloud({
+          questions: questions,
+          testDurationMinutes: testDurationMinutes
+        });
+      }
+
+      closeEditorModal();
+      showNotice("Questions Saved", "Exam questions and duration updated and synced to cloud!", "fa-solid fa-circle-check", "bg-emerald-100 text-emerald-600");
+    }
+
+    function openBrandingModal() {
+      document.getElementById('brandInstInput').value = branding.instName || '';
+      document.getElementById('brandTitleInput').value = branding.title || '';
+      document.getElementById('brandSubtitleInput').value = branding.subtitle || '';
+      document.getElementById('brandThemeSelect').value = branding.theme || 'rose';
+      document.getElementById('brandBannerImgInput').value = branding.bannerImg || '';
+      document.getElementById('brandLogoUrlInput').value = branding.logoUrl || '';
+      document.getElementById('brandingModal').classList.remove('hidden');
+    }
+
+    function closeBrandingModal() {
+      document.getElementById('brandingModal').classList.add('hidden');
+    }
+
+    function saveBrandingSettings() {
+      branding.instName = document.getElementById('brandInstInput').value.trim() || defaultBranding.instName;
+      branding.title = document.getElementById('brandTitleInput').value.trim() || defaultBranding.title;
+      branding.subtitle = document.getElementById('brandSubtitleInput').value.trim() || defaultBranding.subtitle;
+      branding.theme = document.getElementById('brandThemeSelect').value;
+      branding.bannerImg = document.getElementById('brandBannerImgInput').value.trim();
+      branding.logoUrl = document.getElementById('brandLogoUrlInput').value.trim();
+
+      localStorage.setItem('cbt_branding', JSON.stringify(branding));
+      applyBranding();
+
+      if (window.saveConfigToCloud) {
+        window.saveConfigToCloud({
+          branding: branding
+        });
+      }
+
+      closeBrandingModal();
+      showNotice("Header Updated", "Your customized banner and logo settings have been saved and synced to the cloud!", "fa-solid fa-paintbrush", "bg-amber-100 text-amber-600");
+    }
+
+    function applyBranding() {
+      const instNameEl = document.getElementById('displayInstName');
+      const testTitleEl = document.getElementById('displayTestTitle');
+      const testSubtitleEl = document.getElementById('displayTestSubtitle');
+      const footerTextEl = document.getElementById('footerText');
+
+      if (instNameEl) instNameEl.innerText = branding.instName;
+      if (testTitleEl) testTitleEl.innerText = branding.title;
+      if (testSubtitleEl) testSubtitleEl.innerText = branding.subtitle;
+      if (footerTextEl) footerTextEl.innerHTML = `${escapeHTML(branding.instName)} &bull; ${escapeHTML(branding.title)} &copy; 2026`;
+
+      const bgImageElem = document.getElementById('bannerBgImage');
+      const gradientOverlayElem = document.getElementById('bannerGradientOverlay');
+      const formattedBannerUrl = formatImageUrl(branding.bannerImg);
+
+      const solidGradients = {
+        rose: 'bg-gradient-to-r from-rose-950/85 via-red-900/75 to-slate-950/90',
+        indigo: 'bg-gradient-to-r from-indigo-950/85 via-indigo-900/75 to-slate-950/90',
+        emerald: 'bg-gradient-to-r from-emerald-950/85 via-teal-900/75 to-slate-950/90',
+        blue: 'bg-gradient-to-r from-blue-950/85 via-sky-900/75 to-slate-950/90',
+        purple: 'bg-gradient-to-r from-purple-950/85 via-indigo-900/75 to-slate-950/90',
+        dark: 'bg-gradient-to-r from-slate-950/85 via-slate-900/75 to-black/90'
+      };
+
+      const overlayGradients = {
+        rose: 'bg-gradient-to-r from-rose-950/85 via-red-900/75 to-slate-950/90 backdrop-blur-[2px]',
+        indigo: 'bg-gradient-to-r from-indigo-950/85 via-indigo-900/75 to-slate-950/90 backdrop-blur-[2px]',
+        emerald: 'bg-gradient-to-r from-emerald-950/85 via-teal-900/75 to-slate-950/90 backdrop-blur-[2px]',
+        blue: 'bg-gradient-to-r from-blue-950/85 via-sky-900/75 to-slate-950/90 backdrop-blur-[2px]',
+        purple: 'bg-gradient-to-r from-purple-950/85 via-indigo-900/75 to-slate-950/90 backdrop-blur-[2px]',
+        dark: 'bg-gradient-to-r from-slate-950/85 via-slate-900/75 to-black/90 backdrop-blur-[2px]'
+      };
+
+      const themeKey = branding.theme || 'rose';
+
+      if (formattedBannerUrl) {
+        if (bgImageElem) {
+          bgImageElem.style.backgroundImage = `url('${formattedBannerUrl}')`;
+          bgImageElem.classList.remove('hidden');
+        }
+        if (gradientOverlayElem) {
+          gradientOverlayElem.className = `absolute inset-0 transition-all duration-300 pointer-events-none ${overlayGradients[themeKey] || overlayGradients.rose}`;
+        }
+      } else {
+        if (bgImageElem) bgImageElem.classList.add('hidden');
+        if (gradientOverlayElem) {
+          gradientOverlayElem.className = `absolute inset-0 transition-all duration-300 pointer-events-none ${solidGradients[themeKey] || solidGradients.rose}`;
+        }
+      }
+
+      const iconElem = document.getElementById('headerIcon');
+      const imgElem = document.getElementById('headerImageLogo');
+      const formattedLogoUrl = formatImageUrl(branding.logoUrl);
+      if (formattedLogoUrl && imgElem) {
+        imgElem.src = formattedLogoUrl;
+        imgElem.classList.remove('hidden');
+        if (iconElem) iconElem.classList.add('hidden');
+      } else {
+        if (imgElem) imgElem.classList.add('hidden');
+        if (iconElem) iconElem.classList.remove('hidden');
+      }
+    }
+
+    function openScoresModal() {
+      const modal = document.getElementById('scoresModal');
+      if (modal) modal.classList.remove('hidden');
+      if (window.refreshSubmissionsFromCloud) {
+        window.refreshSubmissionsFromCloud();
+      } else {
+        updateScoresUI();
+      }
+    }
+
+    function closeScoresModal() {
+      const modal = document.getElementById('scoresModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    window.updateScoresUI = function() {
+      const submissions = window.studentSubmissions || [];
+      const badge = document.getElementById('submissionCountBadge');
+      const statTotal = document.getElementById('statTotalStudents');
+      const statAvg = document.getElementById('statAverageScore');
+      const statHigh = document.getElementById('statHighScore');
+
+      if (badge) badge.innerText = submissions.length;
+      if (statTotal) statTotal.innerText = submissions.length;
+
+      if (submissions.length > 0) {
+        const totalPct = submissions.reduce((acc, curr) => acc + (curr.percentage || 0), 0);
+        const avg = Math.round(totalPct / submissions.length);
+        const max = Math.max(...submissions.map(s => s.percentage || 0));
+
+        if (statAvg) statAvg.innerText = `${avg}%`;
+        if (statHigh) statHigh.innerText = `${max}%`;
+      } else {
+        if (statAvg) statAvg.innerText = `0%`;
+        if (statHigh) statHigh.innerText = `0%`;
+      }
+
+      filterScoresTable();
+    };
+
+    function filterScoresTable() {
+      const query = (document.getElementById('scoreSearchInput')?.value || '').toLowerCase();
+      const submissions = window.studentSubmissions || [];
+      const tbody = document.getElementById('scoresTableBody');
+      if (!tbody) return;
+
+      const filtered = submissions.filter(s => 
+        (s.studentName || '').toLowerCase().includes(query) ||
+        (s.studentId || '').toLowerCase().includes(query)
+      );
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-500">No student records found in cloud database.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(s => {
+        let scoreBadge = 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
+        if (s.percentage >= 70) scoreBadge = 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+        else if (s.percentage >= 50) scoreBadge = 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+
+        return `
+          <tr class="hover:bg-slate-900/50 transition">
+            <td class="py-3 px-2 font-medium text-white">${escapeHTML(s.studentName || 'Anonymous')}</td>
+            <td class="py-3 px-2 text-slate-400 font-medium">${escapeHTML(s.studentId || 'N/A')}</td>
+            <td class="py-3 px-2">
+              <span class="px-2 py-0.5 rounded-lg text-xs font-bold ${scoreBadge}">${s.percentage}%</span>
+            </td>
+            <td class="py-3 px-2 text-slate-300">${s.correctCount}/${s.totalQuestions}</td>
+            <td class="py-3 px-2 text-slate-400">${s.timeTakenFormatted || 'N/A'}</td>
+            <td class="py-3 px-2 text-right text-slate-500 text-[11px]">${s.submittedAt || '--'}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function exportScoresCSV() {
+      const submissions = window.studentSubmissions || [];
+      if (submissions.length === 0) {
+        showNotice("No Data", "There are no student results to export yet.", "fa-solid fa-file-excel", "bg-amber-100 text-amber-600");
+        return;
+      }
+
+      let csv = "Student Name,School ID,Score (%),Correct Answers,Total Questions,Time Taken,Submission Date\n";
+      submissions.forEach(s => {
+        csv += `"${s.studentName || ''}","${s.studentId || ''}",${s.percentage},${s.correctCount},${s.totalQuestions},"${s.timeTakenFormatted || ''}","${s.submittedAt || ''}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.setAttribute('href', url);
+      a.setAttribute('download', `CBT_Student_Results_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    function escapeHTML(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>'"]/g, 
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+      );
+    }
+
+    // Apply initial branding settings and instruction count on page load
+    applyBranding();
+    updateInstructionSummary();
+  </script>
+</body>
+</html>
