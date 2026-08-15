@@ -549,7 +549,7 @@
         }
 
         // Live realtime listener for student submissions from global Firestore collection
-        const submissionsRef = collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
+        const submissionsRef = collection(db, 'artifacts', appId, 'public', 'data', 'scores');
         onSnapshot(submissionsRef, (snapshot) => {
           const docs = [];
           snapshot.forEach(doc => {
@@ -598,7 +598,7 @@
     // Explicit manual fetch function for teacher scores modal refresh
     window.refreshSubmissionsFromCloud = async function() {
       try {
-        const submissionsRef = collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
+        const submissionsRef = collection(db, 'artifacts', appId, 'public', 'data', 'scores');
         const snapshot = await getDocs(submissionsRef);
         const docs = [];
         snapshot.forEach(doc => {
@@ -642,29 +642,19 @@
             await signInAnonymously(auth);
           }
         }
-        const submissionsRef = collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
-        await addDoc(submissionsRef, payload);
+        
+        // Save directly to Firebase Firestore 'scores' collection
+        const scoresRef = collection(db, 'artifacts', appId, 'public', 'data', 'scores');
+        await addDoc(scoresRef, payload);
+        console.log("Score saved to Firebase Firestore successfully!");
       } catch (e) {
         console.error("Error saving student score to Firestore:", e);
         window.studentSubmissions.unshift(payload);
         if (window.updateScoresUI) window.updateScoresUI();
       }
-
-      const webhookUrl = window.googleSheetWebhookUrl || localStorage.getItem('cbt_google_webhook');
-      if (webhookUrl && webhookUrl.startsWith('http')) {
-        try {
-          fetch(webhookUrl, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-        } catch (err) {
-          console.error("Google Sheet webhook error:", err);
-        }
-      }
     };
 
+    
     initCloudStorage();
   </script>
 
