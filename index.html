@@ -526,11 +526,18 @@
     import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'mini-cbt-app';
-    const firebaseConfig = typeof __firebase_config !== 'undefined' 
-      ? JSON.parse(__firebase_config) 
-      : { apiKey: "demo", authDomain: "demo.firebaseapp.com", projectId: "demo-app" };
+    const appId = 'nochie-totv1';
 
+    const firebaseConfig = {
+      apiKey: "AIzaSyA8VKJFsl02RBw2w8RYL_0zmAVNS6dbVjw",
+      authDomain: "nochie-totv1.firebaseapp.com",
+      projectId: "nochie-totv1",
+      storageBucket: "nochie-totv1.firebasestorage.app",
+      messagingSenderId: "901690729846",
+      appId: "1:901690729846:web:a6fb6b8570e58d2c48c657",
+      measurementId: "G-TK41GE1V78"
+    };
+    
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
