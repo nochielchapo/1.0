@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Train of Trainers 1.0 - CBT Portal</title>
   <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com"></script>ge
   <!-- FontAwesome for Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -322,6 +322,21 @@
           <span class="font-semibold text-slate-300">Test Duration (Minutes):</span>
           <input type="number" id="customTimeInput" min="1" max="180" class="w-16 p-1.5 bg-slate-900 border border-slate-800 rounded-lg text-white font-bold text-center">
         </div>
+
+        <!-- NEW: File Upload Integration for Questions -->
+        <div class="flex items-center gap-2">
+            <label class="cursor-pointer bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow">
+            <i class="fa-solid fa-file-arrow-up"></i> Upload JSON Questions
+            <input type="file" id="jsonQuestionsFileInput" accept=".json" onchange="handleQuestionsFileUpload(event)" class="hidden">
+            </label>
+        </div>
+
+        <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-800">
+            <button id="tabVisualBtn" onclick="switchEditorTab('visual')" class="py-1.5 px-3 rounded-lg bg-rose-600 text-white font-bold transition">Visual Builder</button>
+            <button id="tabJsonBtn" onclick="switchEditorTab('json')" class="py-1.5 px-3 rounded-lg text-slate-400 hover:text-white font-medium transition">JSON Source</button>
+        </div>
+        </div>
+
         <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-800">
           <button id="tabVisualBtn" onclick="switchEditorTab('visual')" class="py-1.5 px-3 rounded-lg bg-rose-600 text-white font-bold transition">Visual Builder</button>
           <button id="tabJsonBtn" onclick="switchEditorTab('json')" class="py-1.5 px-3 rounded-lg text-slate-400 hover:text-white font-medium transition">JSON Source</button>
@@ -1296,6 +1311,46 @@
         jsonView.classList.remove('hidden');
         visualView.classList.add('hidden');
       }
+    }
+
+    // Handle uploading and parsing a JSON questions file
+    function handleQuestionsFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+        const importedQuestions = JSON.parse(e.target.result);
+
+        // Validate that it's a non-empty array with proper structure
+        if (!Array.isArray(importedQuestions) || importedQuestions.length === 0) {
+            showNotice("Invalid Format", "The uploaded file must contain a valid array of question objects.", "fa-solid fa-circle-xmark", "bg-rose-100 text-rose-600");
+            return;
+        }
+
+        // Quick structural sanity check on the first item
+        if (!importedQuestions[0].question || !Array.isArray(importedQuestions[0].options)) {
+            showNotice("Invalid Structure", "Each question must contain a 'question' string and an 'options' array.", "fa-solid fa-circle-xmark", "bg-rose-100 text-rose-600");
+            return;
+        }
+
+        // Assign to questions state
+        questions = importedQuestions;
+
+        // Refresh the Visual Builder and JSON Textarea
+        renderVisualQuestionsBuilder();
+        document.getElementById('jsonEditor').value = JSON.stringify(questions, null, 2);
+
+        // Reset file input so the same file can be re-uploaded if needed
+        event.target.value = '';
+
+        showNotice("Questions Imported", `Successfully loaded ${questions.length} questions from file! Click 'Save Changes & Sync Cloud' to apply.`, "fa-solid fa-circle-check", "bg-emerald-100 text-emerald-600");
+        } catch (error) {
+        showNotice("Parse Error", "Could not parse JSON file. Please ensure it is formatted correctly.", "fa-solid fa-circle-xmark", "bg-rose-100 text-rose-600");
+        }
+    };
+    reader.readAsText(file);
     }
 
     function renderVisualQuestionsBuilder() {
